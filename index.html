@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FlashCards - Pentest & Réseaux</title>
+    <title>FlashCards - FortiGate NSE 4</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -16,7 +16,7 @@
 
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #312e81 100%);
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #1e3a8a 100%);
             min-height: 100vh;
             padding: 24px;
         }
@@ -105,8 +105,8 @@
 
         .chapter-badge {
             padding: 6px 12px;
-            background: rgba(239, 68, 68, 0.3);
-            color: #fca5a5;
+            background: rgba(59, 130, 246, 0.3);
+            color: #93c5fd;
             border-radius: 9999px;
             font-size: 0.875rem;
             font-weight: 500;
@@ -166,8 +166,8 @@
 
         .card-badge {
             padding: 6px 12px;
-            background: #fee2e2;
-            color: #991b1b;
+            background: #dbeafe;
+            color: #1e40af;
             border-radius: 9999px;
             font-size: 0.875rem;
             font-weight: 600;
@@ -182,7 +182,7 @@
         }
 
         .card:hover .card-toggle-icon {
-            color: #ef4444;
+            color: #2563eb;
         }
 
         .card-content {
@@ -194,13 +194,12 @@
             font-size: 1rem;
             line-height: 1.6;
             word-wrap: break-word;
-            white-space: pre-line;
         }
 
         .footer-text {
             margin-top: 32px;
             text-align: center;
-            color: #fca5a5;
+            color: #93c5fd;
             font-size: 0.875rem;
         }
 
@@ -380,7 +379,7 @@
         }
 
         .login-header p {
-            color: #fca5a5;
+            color: #93c5fd;
             font-size: 0.95rem;
         }
 
@@ -415,9 +414,9 @@
 
         .form-group input:focus {
             outline: none;
-            border-color: #ef4444;
+            border-color: #3b82f6;
             background: rgba(255, 255, 255, 0.15);
-            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
         }
 
         .form-group input::placeholder {
@@ -568,7 +567,7 @@
         <div class="login-box">
             <div class="login-header">
                 <h1>🔐 Connexion</h1>
-                <p>Accédez aux flashcards Pentest & Réseaux</p>
+                <p>Accédez aux flashcards FortiGate NSE 4</p>
             </div>
             <form class="login-form" id="loginForm">
                 <div class="error-message" id="errorMessage">
@@ -591,8 +590,8 @@
     <div class="main-content" id="mainContent">
         <div class="container">
             <div class="header">
-                <h1>🔐 Flashcards Pentest & Réseaux</h1>
-                <p id="statsText">11 chapitres • 47 questions</p>
+                <h1>📚 Flashcards FortiGate NSE 4</h1>
+                <p id="statsText">10 chapitres • 100 questions</p>
                 <div class="header-controls">
                     <button class="btn-random" id="randomModeBtn">🎲 Mode Aléatoire</button>
                 </div>
@@ -602,7 +601,7 @@
 
         <div class="random-mode-container" id="randomModeContainer">
             <div class="random-progress">
-                <div class="progress-text"><span id="progressCurrent">1</span> / <span id="progressTotal">47</span></div>
+                <div class="progress-text"><span id="progressCurrent">1</span> / <span id="progressTotal">100</span></div>
                 <div class="progress-bar-container">
                     <div class="progress-bar" id="progressBar" style="width: 0%"></div>
                 </div>
@@ -622,7 +621,10 @@
     </div>
 
     <script>
-        // Login functionality with hashed credentials
+        // Login functionality with SHA-256 hash
+        const VALID_USERNAME_HASH = '21297e6e966afbd06e8f08c4525ae2edcbd3696cc6bc436037e278d4b1e67b4d';
+        const VALID_PASSWORD_HASH = '56318228b3a39a2af341c080cc2d8b1d7e088ed24bd28d6cc9b34a8711253434';
+
         async function hashString(str) {
             const encoder = new TextEncoder();
             const data = encoder.encode(str);
@@ -630,9 +632,6 @@
             const hashArray = Array.from(new Uint8Array(hashBuffer));
             return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
         }
-
-        const VALID_USERNAME_HASH = '21297e6e966afbd06e8f08c4525ae2edcbd3696cc6bc436037e278d4b1e67b4d';
-        const VALID_PASSWORD_HASH = '56318228b3a39a2af341c080cc2d8b1d7e088ed24bd28d6cc9b34a8711253434';
 
         document.getElementById('loginForm').addEventListener('submit', async function(e) {
             e.preventDefault();
@@ -645,10 +644,12 @@
             const passwordHash = await hashString(password);
             
             if (usernameHash === VALID_USERNAME_HASH && passwordHash === VALID_PASSWORD_HASH) {
+                // Login successful
                 document.getElementById('loginContainer').style.display = 'none';
                 document.getElementById('mainContent').classList.add('show');
                 sessionStorage.setItem('isLoggedIn', 'true');
             } else {
+                // Login failed
                 errorMessage.classList.add('show');
                 setTimeout(() => {
                     errorMessage.classList.remove('show');
@@ -656,6 +657,7 @@
             }
         });
 
+        // Check if already logged in
         window.addEventListener('DOMContentLoaded', function() {
             if (sessionStorage.getItem('isLoggedIn') === 'true') {
                 document.getElementById('loginContainer').style.display = 'none';
@@ -663,6 +665,7 @@
             }
         });
 
+        // Flashcards functionality
         let randomModeActive = false;
         let allCards = [];
         let currentRandomIndex = 0;
@@ -770,74 +773,115 @@
         }
 
         const flashcardsByChapter = {
-            "Supervision et Monitoring Réseau": [
-                { question: "Citez 3 avantages de superviser un réseau.", answer: "1. Création d'une ligne de base réseau (Network baseline)\n2. Vue en temps réel de l'état du réseau\n3. Facilite le dépannage" },
-                { question: "Expliquez la différence entre 'poll' et 'trap'.", answer: "Poll : Le gestionnaire interroge régulièrement les agents pour récupérer les informations.\nTrap : Les agents envoient spontanément des notifications au gestionnaire lorsqu'un événement survient." },
-                { question: "Citez 3 inconvénients liés au fait de superviser trop d'éléments.", answer: "1. Consomme des ressources et de la bande passante\n2. Pollue la visibilité des incidents importants\n3. Demande beaucoup de travail pour peu de résultats" },
-                { question: "Lister 5 paramètres qu'il peut être intéressant de monitorer.", answer: "1. Le % de bande passante utilisée\n2. Le % de paquets en erreur\n3. Le % de paquets de diffusion\n4. La température\n5. Les ports en erreur\n(Aussi : mémoire utilisée, CPU utilisé, authentifications incorrectes, état des services)" }
+            "Authentification": [
+                { question: "Citez les trois méthodes principales d'authentification des utilisateurs disponibles sur un FortiGate.", answer: "Authentification locale (login/mdp), authentification via serveur distant (LDAP, RADIUS, etc.) et authentification à deux facteurs (2FA/MFA)." },
+                { question: "Quelles sont les trois méthodes que l'on peut utiliser comme deuxième facteur pour l'authentification sur un FortiGate ?", answer: "FortiToken (matériel ou mobile), OTP via SMS ou e-mail, et les applications TOTP comme Google/Microsoft Authenticator." },
+                { question: "En authentification FortiGate, qu'est-ce que la méthode 'active' ?", answer: "Une méthode où l'utilisateur doit saisir manuellement ses identifiants via une invite de connexion pour obtenir un accès." },
+                { question: "En authentification FortiGate, qu'est-ce que la méthode 'passive' ?", answer: "Un processus transparent où les identifiants de l'utilisateur sont déterminés automatiquement par le pare-feu sans saisie manuelle." },
+                { question: "Si les méthodes d'authentification active et passive sont activées simultanément sur un FortiGate, laquelle est utilisée en priorité ?", answer: "L'authentification passive est prioritaire, et l'active est utilisée comme méthode de secours (backup)." },
+                { question: "Quels sont les quatre types de groupes d'utilisateurs sur un FortiGate ?", answer: "Firewall, Guest, Fortinet Single Sign-On (FSSO) et RADIUS Single Sign-On (RSSO)." },
+                { question: "Pourquoi est-il parfois nécessaire d'autoriser le service HTTP dans les règles de pare-feu utilisant l'authentification ?", answer: "Pour permettre la redirection de l'utilisateur vers le portail captif d'authentification." },
+                { question: "Pourquoi est-il parfois nécessaire d'autoriser le service DNS dans les règles de pare-feu utilisant l'authentification ?", answer: "Pour permettre la résolution des noms de domaine nécessaires à l'authentification ou à la navigation avant que celle-ci ne soit complète." },
+                { question: "Qu'est-ce qu'un portail captif ?", answer: "Une page web utilisée pour l'authentification active des utilisateurs, qui peut également afficher des conditions d'utilisation." },
+                { question: "Pourquoi doit-on exempter certains périphériques, comme les imprimantes ou les objets IoT, de l'authentification par portail captif ?", answer: "Car ces appareils ne disposent pas d'interface pour réaliser une authentification active; une authentification passive doit être utilisée pour eux." },
+                { question: "Citez une méthode pour garantir que l'authentification active des utilisateurs soit appliquée au trafic.", answer: "Activer l'authentification dans chaque règle de pare-feu qui pourrait correspondre au trafic de l'utilisateur." },
+                { question: "Quelle commande CLI empêche le FortiGate de passer à la règle de pare-feu suivante si l'authentification est requise ?", answer: "L'option d'authentification à la demande (config user setting → set auth-on-demand always)." }
             ],
-            "Gestion des Alarmes": [
-                { question: "Lister 5 questions à se poser concernant la mise en place d'une gestion des alarmes.", answer: "1. Déterminer si et quand il faut générer une alarme\n2. Limiter au maximum les alertes et seules les bonnes personnes sont alertées\n3. Clarté du niveau d'importance de l'alarme\n4. Choix du type d'alarme (console, mail, SMS)\n5. Temporisateur (pas une alarme à chaque changement d'état)" },
-                { question: "Peut-on automatiser une action en réaction à une alarme ? Citez deux exemples.", answer: "Oui, on peut automatiser des actions.\nExemples :\n1. HTTPd arrêté → exécuter un script de redémarrage\n2. Charge CPU élevée → arrêter un processus non critique" },
-                { question: "Quel est l'objectif du filtrage des alarmes ?", answer: "Filtrer les alertes pour éviter les cascades d'alarmes.\nObjectif : À un problème, une alerte (éviter la redondance et le bruit)." }
+            "Journalisation (Logging)": [
+                { question: "Citez l'un des trois principaux avantages de la journalisation (logging) sur un FortiGate.", answer: "Elle apporte de la visibilité sur les activités du réseau, facilite l'établissement d'une baseline, ou assure la traçabilité des événements critiques." },
+                { question: "Quel est le principal inconvénient de l'utilisation de la journalisation sur un pare-feu ?", answer: "Elle consomme des ressources système (CPU, mémoire, disque)." },
+                { question: "Où peut-on stocker les journaux générés par un FortiGate ?", answer: "Sur le disque dur local du FortiGate ou sur un serveur distant (comme FortiAnalyzer, FortiManager ou un serveur Syslog)." },
+                { question: "Dans la classification des logs FortiGate, quel type de journal enregistre le trafic autorisé ou bloqué ?", answer: "Le journal de type 'Traffic' (Forward)." },
+                { question: "Dans la classification des logs FortiGate, quel type de journal enregistre des informations sur les événements système comme les logins admin ?", answer: "Le journal de type 'Event' et sous-type 'System'." },
+                { question: "Dans la classification des logs FortiGate, quel type de journal enregistre les événements liés aux fonctionnalités de sécurité comme l'antivirus ou l'IPS ?", answer: "Le journal de type 'Security' (ou UTM)." },
+                { question: "Classez les niveaux de sévérité des journaux FortiGate du plus critique au moins critique (les 4 premiers).", answer: "Emergency (0), Alert (1), Critical (2), Error (3)." },
+                { question: "Quel niveau de sévérité de log FortiGate correspond à un 'Avertissement, une fonctionnalité pourrait être affectée' (ex: espace disque faible) ?", answer: "Warning (Niveau 4)." },
+                { question: "Dans l'exemple de log fourni, quel est l'identifiant (ID) de la règle de pare-feu qui a traité le trafic ?", answer: "L'ID de la règle de pare-feu est 3 (policyid=3)." },
+                { question: "Dans l'exemple de log fourni, quelle action a été effectuée sur le paquet ?", answer: "Le paquet a été bloqué (action=\"block\")." },
+                { question: "Dans l'exemple de log fourni, quelle est l'adresse IP source qui a généré le trafic ?", answer: "L'adresse IP source est 10.1.100.22 (srcip=10.1.100.22)." }
             ],
-            "Syslog": [
-                { question: "Sur un périphérique Cisco, vers quelles destinations peut-on envoyer des messages syslog ?", answer: "1. Tampon de journalisation (sur le périphérique)\n2. Console\n3. Terminal (lignes VTY)\n4. Serveur Syslog" },
-                { question: "Citer, dans l'ordre, les niveaux de gravité syslog.", answer: "0. Emergency (système inutilisable)\n1. Alert (action immédiate requise)\n2. Critical (condition critique)\n3. Error (condition d'erreur)\n4. Warning (condition d'avertissement)\n5. Notice (normal mais significatif)\n6. Informational (message informatif)\n7. Debugging (message de débogage)" },
-                { question: "Expliquer la notion de capacité syslog (syslog facility).", answer: "Identificateurs spécifiant l'appareil, le protocole ou le module qui logue le message.\nPermet de catégoriser la source du message (kernel, mail, auth, local0-7, etc.)" }
+            "VPN (IPsec & SSL)": [
+                { question: "Citez les quatre éléments de sécurité fondamentaux assurés par un VPN (SSL ou IPsec).", answer: "Authentification, Chiffrement, Intégrité et Anti-rejeu." },
+                { question: "En configuration VPN, quel type de pair distant est utilisé lorsque l'adresse IP de destination est connue et fixe ?", answer: "Static IP Address." },
+                { question: "En configuration VPN, quel type de pair distant est utilisé lorsque l'IP de destination est dynamique mais que son nom de domaine est statique ?", answer: "Dynamic DNS." },
+                { question: "En configuration VPN, quel type de pair distant force le FortiGate à être uniquement le répondeur et est utilisé quand l'IP du pair est dynamique et non retrouvable ?", answer: "Dialup." },
+                { question: "Quelle topologie VPN est la moins sensible aux pannes car chaque site est directement connecté à tous les autres ?", answer: "La topologie Full Meshed." },
+                { question: "Quelle topologie VPN impose une charge de travail importante au site central qui relaie tout le trafic inter-sites ?", answer: "La topologie Hub and Spoke." },
+                { question: "Quelle est l'utilité de la technologie ADVPN (Auto Discovery VPN) ?", answer: "Elle permet de négocier dynamiquement des tunnels VPN directs entre les 'spokes' d'une topologie Hub-and-Spoke." },
+                { question: "Quelle est l'utilité de la fonctionnalité Xauth dans un VPN IPsec ?", answer: "Elle ajoute une couche d'authentification utilisateur en plus de l'authentification par clé pré-partagée (PSK) ou certificat." },
+                { question: "Quel est le but de l'extension IPsec 'IKE Mode Configuration' ?", answer: "Fournir des paramètres de configuration réseau (comme une adresse IP) de manière dynamique aux clients VPN lors de leur connexion." },
+                { question: "À quoi sert la fonctionnalité 'Dead Peer Detection' (DPD) dans une configuration VPN ?", answer: "À vérifier que le pair distant (l'autre extrémité du tunnel VPN) est toujours joignable." },
+                { question: "Quel protocole de sécurité est principalement utilisé par ce qui est communément appelé un VPN SSL ?", answer: "Le protocole TLS (Transport Layer Security)." },
+                { question: "Quelle est la principale différence de sécurité entre un VPN IPsec et un VPN SSL ?", answer: "La sécurité d'IPsec est considérée comme meilleure, offrant une authentification bidirectionnelle et sécurisant toutes les communications entre les périphériques." },
+                { question: "Dans un VPN SSL FortiGate, quelle est la caractéristique principale du mode 'tunnel' ?", answer: "Il nécessite un client VPN et permet à n'importe quelle application IP de transmettre des données à travers le tunnel, connectant l'utilisateur directement au réseau." },
+                { question: "Dans un VPN SSL FortiGate, quelle est la caractéristique principale du mode 'Web-only' ?", answer: "L'utilisateur accède aux ressources via un portail web par reverse proxy, ne nécessitant qu'un navigateur et supportant un nombre limité de protocoles." },
+                { question: "Que se passe-t-il avec le trafic Internet lorsque le 'split-tunneling' est activé pour un client VPN ?", answer: "Seul le trafic destiné au réseau privé est routé via le tunnel VPN; le trafic vers Internet est routé localement par la connexion de l'utilisateur." },
+                { question: "Que se passe-t-il avec le trafic Internet lorsque le 'split-tunneling' est désactivé pour un client VPN ?", answer: "Tout le trafic du client, y compris le trafic Internet, est routé via le tunnel VPN, et le FortiGate devient la passerelle par défaut." }
             ],
-            "SNMP (Simple Network Management Protocol)": [
-                { question: "Que signifie l'acronyme SNMP et que peut-on faire grâce à SNMP ?", answer: "SNMP = Simple Network Management Protocol\nPermet de :\n1. Gérer les équipements réseau\n2. Superviser les équipements\n3. Diagnostiquer des problèmes réseaux" },
-                { question: "Citer les composants de base d'un système SNMP.", answer: "1. Le gestionnaire SNMP (SNMP manager) - station de gestion\n2. Les agents SNMP (SNMP agent) - logiciel sur les équipements\n3. Les bases d'informations de gestion (MIB) - structure des données" },
-                { question: "Comment identifie-t-on un objet de la MIB ?", answer: "Par un nombre appelé OID (Object Identifier) ou par un nom normalisé.\nExemple : 1.3.6.1.2.1.1.1.0 ou sysDescr.0" },
-                { question: "Comment peut-on trouver l'identifiant d'un objet de la MIB ?", answer: "1. Par MIB Browser (outil graphique)\n2. Par SNMP Object Navigator (consultation en ligne)\n3. Dans la documentation de la MIB" },
-                { question: "Citer quelles versions de SNMP sont sécurisées ?", answer: "SNMPv3 est la seule version vraiment sécurisée.\n(SNMPv2c offre quelques améliorations mais reste peu sécurisé - utilise des community strings en clair)" },
-                { question: "Citer les trois niveaux de sécurité de SNMPv3.", answer: "1. noAuthNoPriv : Pas d'authentification, pas de chiffrement\n2. authNoPriv : Authentification, pas de chiffrement\n3. authPriv : Authentification ET chiffrement (le plus sécurisé)" }
+            "PKI & Certificats": [
+                { question: "Dans une PKI, quelle entité est responsable de la génération des certificats après validation des demandes ?", answer: "L'Autorité de Certification (CA - Certificate Authority)." },
+                { question: "Quel est le niveau de validation de certificat le plus bas, typiquement utilisé pour les blogs ou sites personnels ?", answer: "Domain Validated (DV)." },
+                { question: "Quel est le niveau de validation de certificat le plus élevé, recommandé pour les sites de e-commerce ?", answer: "Extended Validation (EV)." },
+                { question: "Quel est le rôle d'un algorithme de chaînage en cryptographie ?", answer: "S'assurer que des chiffrements distincts sont produits même lorsque le même texte est chiffré plusieurs fois avec la même clé." },
+                { question: "Qu'est-ce qu'une Infrastructure à Clés Publiques (PKI) ?", answer: "Un ensemble de technologies et procédures pour gérer de manière sécurisée le cycle de vie des certificats numériques." },
+                { question: "À quoi sert le protocole OCSP (Online Certificate Status Protocol) ?", answer: "À vérifier en temps réel la validité (non-révocation) d'un certificat numérique X.509." },
+                { question: "Quel est l'avantage de l'agrafage OCSP (OCSP Stapling) ?", answer: "Il réduit la latence des connexions HTTPS et améliore la confidentialité en évitant que le client contacte directement le répondeur OCSP." },
+                { question: "Lors de la vérification d'un certificat, le FortiGate vérifie la révocation via _____ ou OCSP.", answer: "des listes de révocation de certificats (CRL)" }
             ],
-            "Netflow": [
-                { question: "Expliquez ce qu'est Netflow.", answer: "Protocole réseau pour la collecte de trafic IP et la surveillance de trafic réseau.\nDevenu une norme pour la surveillance de réseaux IP.\nPermet d'analyser qui communique avec qui, combien, quand, etc." },
-                { question: "Citez quatre exemples de cas où l'utilisation de Netflow peut être utile.", answer: "1. Comprendre l'utilisation de la bande passante par les applications\n2. Déterminer qui génère le plus de trafic\n3. Déterminer quels sont les sites Web visités régulièrement\n4. Comptabiliser et facturer en fonction du niveau d'utilisation des ressources" },
-                { question: "En quoi Netflow diffère-t-il de SNMP ?", answer: "Netflow :\n- Ne fait QUE collecter des statistiques de trafic\n- Informations très précises sur le trafic\n\nSNMP :\n- Peut collecter d'autres infos (erreurs, CPU, etc.)\n- Peut modifier les configurations\n- Moins précis que Netflow pour le trafic" },
-                { question: "Avec Netflow v5, quels paramètres permettent de différencier les flux IP ?", answer: "1. IP source\n2. IP de destination\n3. N° port source\n4. N° port de destination\n5. Type de protocole de couche 3\n6. Marquage TOS (type de service)\n7. Interface logique d'entrée" },
-                { question: "Quand est-ce qu'un flux Netflow s'arrête ?", answer: "1. Il est inactif (15 secondes par défaut)\n2. Il est trop long (30 minutes par défaut)\n3. La session s'arrête (TCP flag RST ou FIN)" },
-                { question: "Quels sont les avantages de travailler avec Flexible Netflow par rapport à Netflow v5 ?", answer: "Flexible Netflow permet de :\n1. Définir les champs pour distinguer un flux d'un autre (personnalisable)\n2. Spécifier quelles données doivent être envoyées au collecteur (plus flexible)" }
+            "Antivirus & Inspection SSL": [
+                { question: "Quelle est la différence fondamentale entre l'analyse antivirus par signature et l'analyse heuristique ?", answer: "L'analyse par signature recherche des séquences de bits connues (malwares connus), tandis que l'analyse heuristique recherche des comportements suspects (malwares inconnus)." },
+                { question: "Quel est le principe de l'analyse antivirus par 'sandbox' ?", answer: "Le fichier est exécuté dans un environnement de test isolé et sécurisé pour analyser son comportement avant de le laisser entrer dans le réseau." },
+                { question: "Citez une limite de l'analyse antivirus par signatures.", answer: "Elle ne peut bloquer que les malwares déjà connus et répertoriés dans sa base de signatures." },
+                { question: "Le polymorphisme est une technique d'_____ de malware.", answer: "obfuscation" },
+                { question: "Citez une technique d'évasion de sandbox par un malware.", answer: "La détection de l'environnement sandbox, la nécessité d'une action humaine, ou la fragmentation des données." },
+                { question: "Dans le mode d'inspection antivirus 'flow-based' d'un FortiGate, qu'arrive-t-il aux fichiers plus grands que la mémoire tampon ?", answer: "Ils ne sont pas scannés." },
+                { question: "Quel mode d'inspection antivirus FortiGate met en cache le fichier entier avant de le transmettre à l'utilisateur, introduisant une latence perceptible ?", answer: "Le mode Proxy-based full scan." },
+                { question: "Quelle est l'utilité principale de l'inspection SSL-SSH ?", answer: "Elle permet de déchiffrer le trafic chiffré pour y appliquer des politiques de sécurité (antivirus, filtrage web, IPS, DLP)." },
+                { question: "Quelle méthode d'inspection SSL est plus rapide mais moins sécurisée, se contentant de vérifier la validité des certificats ?", answer: "SSL Certificate inspection." },
+                { question: "Quelle méthode d'inspection SSL agit comme un proxy Man-in-the-Middle pour déchiffrer et ré-chiffrer le trafic ?", answer: "Full SSL inspection." }
             ],
-            "AAA (Authentication, Authorization, Accounting)": [
-                { question: "Expliquer la fonction à laquelle correspond chacun des A dans un système de sécurité AAA.", answer: "1. Authentication (Authentification) : Qui êtes-vous ?\n2. Authorization (Autorisation) : Que pouvez-vous faire ?\n3. Accounting (Comptabilisation) : Qu'avez-vous fait ?" },
-                { question: "Citer 3 exemples concrets où il est intéressant d'utiliser la fonction 'Accounting'.", answer: "1. Facturation (billing basé sur l'utilisation)\n2. Audit (traçabilité pour la sécurité)\n3. Dépannage (analyse des problèmes)" },
-                { question: "Citer 3 exemples d'éléments qu'il peut être intéressant de comptabiliser (Accounting).", answer: "1. Les commandes exécutées\n2. Les temps de connexion\n3. Le volume de données (nombres d'octets transmis)\n(Aussi : infos connexions Telnet/SSH, événements systèmes)" },
-                { question: "Quelle précaution faut-il prendre avant d'appliquer la commande 'aaa new-model' ?", answer: "Il faut définir les identifiants de connexion AVANT afin de ne pas perdre l'accès au périphérique.\nSinon vous serez bloqué et devrez faire une récupération de mot de passe." },
-                { question: "Citer les caractéristiques principales des protocoles RADIUS et TACACS+.", answer: "RADIUS :\n- Port 1812/1813\n- Chiffre uniquement le mot de passe\n- Combine authentification et autorisation\n\nTACACS+ :\n- Port 49\n- Chiffre tout le paquet\n- Sépare authentification, autorisation et accounting\n- Plus sécurisé pour Cisco" }
+            "IDS / IPS & WAF": [
+                { question: "Quelle est la différence entre un IDS (Intrusion Detection System) et un IPS (Intrusion Prevention System) ?", answer: "Un IDS détecte passivement les intrusions et alerte, tandis qu'un IPS peut en plus bloquer activement la menace détectée." },
+                { question: "Quel type de détection d'anomalies est simple et efficace pour les attaques volumétriques comme le DoS/DDoS ?", answer: "La détection par seuils (Thresholds)." },
+                { question: "Quel type de détection d'anomalies est efficace pour les menaces inconnues (zero-day) et le brute force ?", answer: "La détection par comportement (Behavior)." },
+                { question: "Qu'est-ce qu'un Web Application Firewall (WAF) ?", answer: "Un pare-feu qui offre une protection spécialisée contre les attaques ciblant les serveurs et applications web, fonctionnant en mode proxy pour une analyse HTTP(S) approfondie." }
             ],
-            "802.1X (Contrôle d'accès réseau)": [
-                { question: "A quoi sert le standard IEEE 802.1X ?", answer: "Standard pour le contrôle d'accès réseau basé sur les ports.\nL'accès réseau est refusé tant que l'utilisateur n'est pas identifié.\nPermet d'empêcher les accès non autorisés sur les ports switch." },
-                { question: "De quoi a-t-on besoin pour mettre en place 802.1X ?", answer: "EAP (Extensible Authentication Protocol)\n\n3 composants :\n1. Supplicant (client)\n2. Authenticator (switch/AP)\n3. Authentication Server (RADIUS)" },
-                { question: "Citez trois types d'authentification utilisables avec 802.1X.", answer: "1. EAP-TLS (certificats, le plus sécurisé)\n2. EAP-TTLS (tunnel TLS)\n3. PEAP (Protected EAP)\n(Aussi : EAP-MD5, EAP-FAST)" }
+            "Haute Disponibilité (HA)": [
+                { question: "Quel est l'intérêt principal de la haute disponibilité (HA) ?", answer: "Obtenir de la redondance pour assurer la tolérance aux pannes et/ou la répartition de charge (load balancing)." },
+                { question: "Quels sont les deux modes de haute disponibilité sur un FortiGate ?", answer: "Le mode actif-passif (failover uniquement) et le mode actif-actif (failover et load balancing)." },
+                { question: "Dans un cluster HA FortiGate en mode actif-passif, quel est le rôle du FortiGate secondaire ?", answer: "Il synchronise sa configuration sur le primaire et surveille son état pour prendre le relais en cas de défaillance (failover)." },
+                { question: "Dans un cluster HA FortiGate en mode actif-actif, que font les appareils secondaires ?", answer: "Ils traitent également le trafic (sont actifs), surveillent l'état du primaire et l'un d'eux prend le rôle de primaire en cas de défaillance." },
+                { question: "A quoi sert le protocole FGCP ?", answer: "- Découvrir des FortiGates qui appartiennent au même groupe HA. - Élire le primaire.- Synchroniser les configurations et d'autres données. - Détecter la défaillance d'un FortiGate." },
+                { question: "Citez trois prérequis identiques pour tous les membres d'un cluster HA FortiGate.", answer: "Le même firmware, le même modèle matériel (ou licence VM), et les mêmes licences." },
+                { question: "Que se passe-t-il si les membres d'un cluster HA FortiGate n'ont pas les mêmes licences ?", answer: "Le cluster s'aligne sur la 'licence la plus faible', désactivant les fonctionnalités non présentes sur tous les membres." },
+                { question: "Expliquer le processus d'élection du FortiGate primaire avec le paramètre HA override activé.", answer: "Interface monitorée → Priorité → Uptime → N° de série" },
+                { question: "Expliquer le processus d'élection du FortiGate primaire avec le paramètre HA override désactivé.", answer: "Interface monitorée → Uptime → Priorité → N° de série" },
+                { question: "Qu'est-ce que la synchronisation des sessions dans un cluster HA ?", answer: "Partage des informations de session entre les membres du cluster.\n• Sessions TCP maintenues\n• Sessions IPsec préservées\n• Continuité après basculement (failover)" },
+                { question: "Le nom d'hôte (hostname) d'un FortiGate est-il un paramètre synchronisé dans un cluster HA ?", answer: "Non, le nom d'hôte est un des paramètres qui ne sont pas synchronisés." },
+                { question: "Citez l'une des trois causes principales pouvant mener à un basculement (failover) dans un cluster HA.", answer: "Un membre mort (Dead member), une liaison défaillante (Failed link), ou un lien distant défaillant (Failed remote link)." }
             ],
-            "Port Mirroring (SPAN)": [
-                { question: "Expliquez le principe du port mirroring (SPAN).", answer: "Permet à un commutateur de copier le trafic Ethernet entrant par un ou plusieurs ports (ou VLAN) et l'envoyer vers un autre port.\nUtile pour l'analyse sans interrompre le trafic." },
-                { question: "Expliquez deux cas de figure où il est intéressant d'utiliser du port mirroring ?", answer: "1. Analyseur de paquets : Pour capturer et analyser le trafic avec Wireshark\n2. IDS (Intrusion Detection System) : Pour détecter les attaques en analysant le trafic" },
-                { question: "Citer les caractéristiques principales d'un port source SPAN et d'un port destination SPAN.", answer: "Port source :\n- Trafic à surveiller\n- Peut être un ou plusieurs ports ou VLAN\n- Le trafic normal n'est pas affecté\n\nPort destination :\n- Reçoit la copie du trafic\n- Connecté à l'analyseur\n- Ne devrait pas envoyer de trafic" }
+            "Zero Trust (ZTNA)": [
+                { question: "Quel est le principe fondamental du modèle de sécurité Zéro Confiance (Zero Trust) ?", answer: "Partir du principe qu'il n'existe aucune zone de confiance : il faut toujours vérifier, aucune transaction n'est autorisée sans authentification et autorisation." },
+                { question: "Selon le NIST, quels sont les 7 principes sur lesquels repose une architecture ZTA", answer: "1. Données, services et équipements = ressources\n2. Toutes les communications doivent être sécurisées\n3. Chaque accès doit être vérifié et évalué\n4. Accès basé sur des politiques dynamiques\n5. Surveillance en temps réel du niveau de sécurité\n6. Authentification et autorisation dynamiques avant tout accès\n7. Supervision constante de la sécurité" },
+                { question: "Quelle est la particularité du contrôle d'accès dans la solution Fortinet ZTNA ?", answer: "L'accès est accordé par session à une application spécifique, et le contrôle est ré-effectué à chaque nouvelle session. Le processus s'effectue indépendamment de l'emplacement  du client et de la ressource." },
+                { question: "En Fortinet ZTNA, quel composant est responsable de la configuration des règles de tags et de la synchronisation avec le pare-feu ?", answer: "Le FortiClient EMS (Enterprise Management Server)." },
+                { question: "En Fortinet ZTNA, quel composant s'enregistre auprès de l'EMS et partage en permanence l'état de l'appareil via la télémétrie ?", answer: "Le FortiClient." },
+                { question: "Quel mode Fortinet ZTNA est utilisé lorsque les terminaux sont physiquement situés dans le réseau ?", answer: "Le mode ZTNA IP/MAC filtering." },
+                { question: "Quel mode Fortinet ZTNA est utilisé pour permettre aux utilisateurs d'accéder aux ressources via un proxy SSL (HTTP ou TFAP) ?", answer: "Le mode ZTNA access proxy." },
+                { question: "Quelle est la principale différence entre le ZTNA et le VPN en termes de surface d'attaque ?", answer: "Le VPN étend le périmètre du réseau à l'utilisateur, tandis que le ZTNA n'accorde un accès qu'à des applications spécifiques par session, réduisant la surface d'attaque." }
             ],
-            "VRF (Virtual Routing and Forwarding)": [
-                { question: "Que permet la technologie VRF ?", answer: "Les VRF (Virtual Routing and Forwarding) permettent de créer plusieurs routeurs logiques au sein d'un même routeur physique.\nIsolement du trafic entre différents clients/départements." },
-                { question: "Citer trois caractéristiques d'une VRF.", answer: "1. Dispose de sa propre table de routage (indépendante)\n2. Isole le trafic utilisateur dans le VRF (sécurité)\n3. Peut être utilisé avec VPN et protocoles de routage dynamiques" },
-                { question: "Expliquer la notion de table globale (global routing and forwarding table).", answer: "Table de routage utilisée par défaut, avec ou sans VRF.\nSi aucune VRF n'est spécifiée, le trafic utilise la table globale.\nC'est la table de routage 'normale' du routeur." },
-                { question: "Comment peut-on faire communiquer des VRF ?", answer: "1. Routes statiques et table de routage globale (route leaking)\n2. Importation et exportation des route-targets (avec MP-BGP)\n3. Utilisation d'un routeur externe entre les VRF" }
+            "Single Sign-On (SSO)": [
+                { question: "Expliquez le principe du Single Sign-On (SSO).", answer: "Après avoir été identifiés une seule fois, les utilisateurs peuvent accéder à diverses ressources du réseau sans avoir à se ré-authentifier." },
+                { question: "Quel mode de déploiement du FSSO pour Windows AD nécessite l'installation d'un agent sur chaque contrôleur de domaine ?", answer: "Le mode 'Domain Controller agent'." },
+                { question: "Quel mode de déploiement FSSO est utilisé lorsqu'il n'est pas possible d'installer un agent sur les contrôleurs de domaine, mais qui génère plus de trafic ?", answer: "Le mode 'Polling'." },
+                { question: "Parmi les modes de polling FSSO, lequel est le plus rapide car il interroge la table des sessions en RAM du serveur AD ?", answer: "Le mode NetAPI polling." },
+                { question: "Quel mode d'accès à l'AD pour le FSSO utilise la convention LDAP (CN, OU, DC) et supporte les groupes imbriqués ?", answer: "Le mode d'accès avancé." }
             ],
-            "Pentest et Audit de Sécurité": [
-                { question: "Expliquer ce que sont un Pentest et un audit de sécurité.", answer: "Pentest : Technique de piratage consistant à tester la vulnérabilité d'un système informatique (attaque simulée).\n\nAudit : Étude approfondie du SI du client, avec l'aide de celui-ci (peut inclure un pentest mais plus large)." },
-                { question: "Quand est-il intéressant de réaliser un pentest ?", answer: "1. Lors de la conception (avant mise en production)\n2. Lors du fonctionnement (à intervalles réguliers)\n3. Après une cyberattaque (identifier les failles)\n4. Quand vous en avez l'obligation réglementaire (conformité)" },
-                { question: "Quels bénéfices une entreprise peut-elle retirer d'un pentest ?", answer: "1. Démontrer qu'un attaquant peut trouver et exploiter des vulnérabilités\n2. Dresser une liste des vulnérabilités exploitables\n3. Lister les informations sensibles qu'un hacker pourrait obtenir\n4. Tester l'efficacité des systèmes de détection d'intrusion\n5. Tester la réactivité des équipes de sécurité (SOC) et des utilisateurs" },
-                { question: "Citez les différentes étapes d'un pentest et expliquez chacune d'elle en une phrase.", answer: "1. Pré-engagement : Définir le cadre légal et les objectifs\n2. Reconnaissance : Collecter des informations sur la cible\n3. Scan & Énumération : Identifier les systèmes et services actifs\n4. Exploitation : Tenter d'exploiter les vulnérabilités trouvées\n5. Post-exploitation : Maintenir l'accès et pivoter\n6. Reporting : Documenter les résultats et recommandations" },
-                { question: "Expliquer l'importance de la phase de pré-engagement d'un pentest.", answer: "L'objectif est d'établir un cadre légal, technique et organisationnel, validé par le client et le prestataire.\nInclut : clauses de confidentialité, périmètre, autorisations, etc.\nÉVITE les problèmes juridiques et définit clairement ce qui est autorisé." },
-                { question: "Citer 5 points importants à définir lors de la phase de préengagement.", answer: "1. Quels systèmes, données, processus entrent dans le cadre du test (scope)\n2. Quel type de pentest (white/grey/black box)\n3. Quelles informations sur la cible le pentester a-t-il à sa disposition\n4. Établissement de canaux de communication sécurisés\n5. Le budget et le planning" }
-            ],
-            "Collecte d'Informations (OSINT & Reconnaissance)": [
-                { question: "Citer 5 exemples d'informations à rechercher dans le cadre d'une collecte OSINT.", answer: "1. Mesures de sécurité physique du site\n2. Relations de l'entreprise (partenaires, fournisseurs)\n3. Dates importantes de la société\n4. Offres d'emplois (technologies utilisées)\n5. Listes des employés (énumération, phishing)\n(Aussi : métadonnées documents, contre-mesures existantes)" },
-                { question: "Citer trois manières de collecter des informations.", answer: "1. OSINT (Open Source Intelligence) - sources publiques\n2. Reconnaissance active (scan, énumération)\n3. Reconnaissance passive (écoute réseau, analyse trafic)\n(Aussi : Social Engineering, Physical Security Assessment)" },
-                { question: "Citer 5 outils permettant de collecter des informations de manière active.", answer: "1. Nmap (scan de ports)\n2. Masscan (scan rapide)\n3. Nessus (scan de vulnérabilités)\n4. OpenVAS (scan de vulnérabilités open source)\n5. Nikto (scan de serveurs web)\n(Aussi : Burp Suite, Qualys)" },
-                { question: "Citer 5 outils permettant de collecter des informations de manière passive.", answer: "1. Médias sociaux (LinkedIn, Facebook, Twitter)\n2. WHOIS Lookups (infos domaines)\n3. Google Dorks (recherches avancées)\n4. Shodan (moteur de recherche IoT)\n5. theHarvester (collecte emails, sous-domaines)\n(Aussi : Archive.org, DNS enumeration, certificats SSL)" }
+            "SD-WAN": [
+                { question: "Citez un des problèmes majeurs que la technologie SD-WAN permet de solutionner pour les entreprises.", answer: "Les coûts élevés des liaisons MPLS, le manque de flexibilité, la gestion complexe des WAN traditionnels, ou les défis de sécurité." },
+                { question: "En SD-WAN, quel est le rôle du 'Link health Monitor' ?", answer: "Vérifier l'état de chaque lien membre de l'interface SD-WAN pour détecter les pannes ou dégradations." },
+                { question: "Quels sont les trois paramètres mesurés par le FortiGate pour évaluer la qualité d'une ligne (Link Quality Measurement) ?", answer: "La latence, la gigue (jitter) et le pourcentage de paquets perdus." },
+                { question: "Comment les règles SD-WAN sont-elles traitées par rapport à la table de routage statique du FortiGate ?", answer: "Elles sont prioritaires par rapport aux routes de la table de routage, agissant comme des routes basées sur des politiques (policy-based routes)." }
             ]
         };
 
