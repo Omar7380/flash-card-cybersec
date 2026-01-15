@@ -621,15 +621,36 @@
     </div>
 
     <script>
-        // Login functionality with SHA-256 hash
-        const VALID_USERNAME_HASH = '21297e6e966afbd06e8f08c4525ae2edcbd3696cc6bc436037e278d4b1e67b4d';
-        const VALID_PASSWORD_HASH = '56318228b3a39a2af341c080cc2d8b1d7e088ed24bd28d6cc9b34a8711253434';
+        // Login functionality with PBKDF2 (100,000 iterations + salt)
+        const SALT = 'f8d3e7a2b9c1d4e5f6a7b8c9d0e1f2a3';
+        const VALID_USERNAME_HASH = '3aa6346da3332ce743f8788c9c08f284ac2165a05e6eec09946fb772f5fa5593';
+        const VALID_PASSWORD_HASH = '6b793e64f7a931ade249dedae70bc7e393ea491b5e45a3c18730fd741489901c';
 
-        async function hashString(str) {
+        async function hashPassword(password, salt) {
             const encoder = new TextEncoder();
-            const data = encoder.encode(str);
-            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            const passwordData = encoder.encode(password);
+            const saltData = encoder.encode(salt);
+            
+            const keyMaterial = await crypto.subtle.importKey(
+                'raw',
+                passwordData,
+                'PBKDF2',
+                false,
+                ['deriveBits']
+            );
+            
+            const derivedBits = await crypto.subtle.deriveBits(
+                {
+                    name: 'PBKDF2',
+                    salt: saltData,
+                    iterations: 100000,
+                    hash: 'SHA-256'
+                },
+                keyMaterial,
+                256
+            );
+            
+            const hashArray = Array.from(new Uint8Array(derivedBits));
             return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
         }
 
@@ -640,8 +661,8 @@
             const password = document.getElementById('password').value;
             const errorMessage = document.getElementById('errorMessage');
             
-            const usernameHash = await hashString(username);
-            const passwordHash = await hashString(password);
+            const usernameHash = await hashPassword(username, SALT);
+            const passwordHash = await hashPassword(password, SALT);
             
             if (usernameHash === VALID_USERNAME_HASH && passwordHash === VALID_PASSWORD_HASH) {
                 // Login successful
